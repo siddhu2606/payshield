@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>PayShield · Member App (Aarav Mehta)</title>
+  
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="theme-color" content="#080C14">
+  <link rel="manifest" href="manifest.json">
+
+  <script src="https://www.gstatic.com/antigravity/web/dev/tailwindcss.min.js"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap');
+    :root {
+      --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+    }
+    body {
+      font-family: var(--font-sans);
+      background-color: #080C14;
+      color: #E2E8F0;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .glass-card {
+      background: rgba(15, 23, 42, 0.8);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .pt-safe { padding-top: max(16px, env(safe-area-inset-top)); }
+    .pb-safe { padding-bottom: max(16px, env(safe-area-inset-bottom)); }
+  </style>
+</head>
+<body class="min-h-screen bg-[#080C14] flex flex-col justify-between max-w-md mx-auto border-x border-slate-800/80 shadow-2xl">
+
+  <!-- TOP HEADER -->
+  <header class="bg-[#0B0F19]/95 backdrop-blur-md border-b border-slate-800 sticky top-0 z-40 pt-safe px-4 pb-3">
+    <div class="flex items-center justify-between">
+      <div class="flex items-center gap-2">
+        <div class="w-8 h-8 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400 font-bold">
+          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+            <line x1="10" y1="9" x2="10" y2="15" stroke="#FBBF24" stroke-width="2.5"/>
+            <line x1="14" y1="9" x2="14" y2="15" stroke="#FBBF24" stroke-width="2.5"/>
+          </svg>
+        </div>
+        <div>
+          <span class="font-extrabold text-white text-base tracking-tight">Pay<span class="text-emerald-400">Shield</span></span>
+          <span class="text-[9px] font-mono text-emerald-400 bg-emerald-500/10 px-1.5 py-0.5 rounded ml-1 border border-emerald-500/20">MEMBER APP</span>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-2">
+        <span class="text-[10px] font-mono bg-emerald-500/10 text-emerald-400 px-2 py-0.5 rounded-full border border-emerald-500/20 flex items-center gap-1">
+          <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping"></span>
+          Live Sync
+        </span>
+        <a href="index.html" title="Hub View" class="text-slate-400 hover:text-white p-1">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN SCROLLABLE CONTENT -->
+  <main class="flex-1 p-4 flex flex-col justify-between space-y-4">
+    
+    <div>
+      <!-- User Info & Call Status Banner -->
+      <div class="flex items-center justify-between text-xs text-slate-400 mb-3">
+        <div class="flex items-center gap-2">
+          <div class="w-7 h-7 rounded-full bg-emerald-500/20 border border-emerald-500/40 text-emerald-400 flex items-center justify-center font-bold text-xs">
+            AM
+          </div>
+          <div>
+            <div class="font-bold text-white leading-none">Aarav Mehta</div>
+            <div class="text-[10px] text-slate-400">Protected Account</div>
+          </div>
+        </div>
+        <div class="text-right">
+          <div class="text-[10px] text-slate-500">Guardian Designated</div>
+          <div class="text-[11px] font-semibold text-purple-400">Priya Mehta</div>
+        </div>
+      </div>
+
+      <!-- Active Call Telemetry Banner -->
+      <div id="member-call-banner" class="mb-4">
+        <!-- Rendered by JS -->
+      </div>
+
+      <!-- STEP 1: CHECKOUT FORM -->
+      <div id="step-form" class="space-y-4">
+        
+        <!-- Scenarios Quick Select -->
+        <div class="glass-card rounded-2xl p-3 border border-slate-800">
+          <div class="text-[10px] font-mono text-slate-400 uppercase tracking-wider mb-2">QUICK TEST SCENARIOS:</div>
+          <div class="grid grid-cols-2 gap-2">
+            <button onclick="fillScenario('digital-arrest')" class="py-2 px-2.5 rounded-xl bg-rose-500/10 hover:bg-rose-500/20 border border-rose-500/30 text-rose-300 text-left text-xs transition">
+              <div class="font-bold">🚨 Digital Arrest</div>
+              <div class="text-[10px] text-rose-400/80">₹85,000 &bull; Fake CBI fine</div>
+            </button>
+            <button onclick="fillScenario('normal-grocery')" class="py-2 px-2.5 rounded-xl bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/30 text-emerald-300 text-left text-xs transition">
+              <div class="font-bold">🛒 Normal Grocery</div>
+              <div class="text-[10px] text-emerald-400/80">₹600 &bull; BigBasket</div>
+            </button>
+          </div>
+        </div>
+
+        <!-- Checkout Fields -->
+        <div class="glass-card rounded-2xl p-4 border border-slate-800 space-y-3">
+          <div>
+            <label class="block text-[11px] font-mono text-slate-400 uppercase mb-1">Send Payment To</label>
+            <input type="text" id="m-payee" value="Inspector R. Sharma (CBI Verification)" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-emerald-500">
+          </div>
+
+          <div class="grid grid-cols-2 gap-2">
+            <div>
+              <label class="block text-[11px] font-mono text-slate-400 uppercase mb-1">UPI ID / VPA</label>
+              <input type="text" id="m-upi" value="cbi.verification@okaxis" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs font-mono text-white focus:outline-none focus:border-emerald-500">
+            </div>
+            <div>
+              <label class="block text-[11px] font-mono text-slate-400 uppercase mb-1">Amount (₹)</label>
+              <input type="number" id="m-amount" value="85000" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs font-bold text-white focus:outline-none focus:border-emerald-500">
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-[11px] font-mono text-slate-400 uppercase mb-1">Payment Purpose / Remarks</label>
+            <input type="text" id="m-reason" value="Government verification penalty under CBI arrest order" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-slate-300 focus:outline-none">
+          </div>
+        </div>
+
+        <button onclick="goToSafetyAssessment()" class="w-full py-4 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-extrabold rounded-2xl text-sm transition active:scale-95 shadow-lg shadow-emerald-500/20 flex items-center justify-center gap-2">
+          <span>Authorize Payment</span>
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+        </button>
+
+      </div>
+
+      <!-- STEP 2: SAFETY ASSESSMENT QUESTIONS -->
+      <div id="step-questions" class="hidden glass-card rounded-3xl p-5 border border-amber-500/30 bg-amber-500/5 space-y-4">
+        <div class="flex items-center gap-2 text-amber-400 text-xs font-bold font-mono">
+          <span class="text-base">🛡️</span> PAYSHIELD SAFETY CHECK
+        </div>
+        <h3 class="text-base font-bold text-white leading-tight">Wait, Aarav. Please answer before sending ₹85,000</h3>
+        <p class="text-xs text-slate-300 leading-relaxed">
+          Our risk engine noticed unusual factors: <span class="text-amber-400 font-semibold">21.2x your usual payment</span> and <span class="text-rose-400 font-semibold">an active phone call</span>.
+        </p>
+
+        <div class="space-y-2.5 text-xs">
+          <label class="flex items-start gap-2.5 p-3 rounded-xl bg-slate-900/90 border border-slate-700 cursor-pointer">
+            <input type="checkbox" id="q-pressure" checked class="mt-0.5 accent-emerald-500">
+            <span class="text-slate-200">Is someone on the phone telling you that you are under arrest or facing legal charges?</span>
+          </label>
+          <label class="flex items-start gap-2.5 p-3 rounded-xl bg-slate-900/90 border border-slate-700 cursor-pointer">
+            <input type="checkbox" id="q-secret" checked class="mt-0.5 accent-emerald-500">
+            <span class="text-slate-200">Did they instruct you not to disconnect or talk to family members?</span>
+          </label>
+        </div>
+
+        <button onclick="submitSafetyAssessment()" class="w-full py-3.5 bg-rose-500 hover:bg-rose-600 text-white font-bold rounded-2xl text-xs transition active:scale-95 shadow-lg shadow-rose-500/20">
+          Verify & Run Coercion Scorer
+        </button>
+      </div>
+
+      <!-- STEP 3: HELD SCREEN (INTERRUPTED) -->
+      <div id="step-held" class="hidden glass-card rounded-3xl p-6 border border-rose-500/40 bg-rose-500/10 text-center space-y-4">
+        <div class="w-16 h-16 rounded-full bg-rose-500/20 border-2 border-rose-500 text-rose-400 flex items-center justify-center mx-auto text-2xl font-bold animate-pulse">
+          ⏸️
+        </div>
+
+        <div>
+          <span class="text-[10px] font-mono bg-rose-500 text-white px-2 py-0.5 rounded-full font-bold">LEVEL 4 &bull; COERCION HOLD</span>
+          <h3 class="text-xl font-bold text-white mt-2">Payment Temporarily Held</h3>
+          <p class="text-xs text-rose-200 mt-1">₹85,000 has NOT left your account.</p>
+        </div>
+
+        <!-- Contradiction Warning Box -->
+        <div class="p-3.5 rounded-xl bg-slate-950/80 border border-rose-500/30 text-left text-xs space-y-1">
+          <div class="text-[10px] font-mono text-rose-400 font-bold uppercase">🚨 Contradiction Detected:</div>
+          <p class="text-slate-300 text-[11px] leading-relaxed">
+            The payee is an individual private savings account created 2 days ago. <span class="text-rose-400 font-semibold">Government agencies and CBI never accept penalties via personal UPI.</span>
+          </p>
+        </div>
+
+        <div class="p-3 rounded-xl bg-purple-500/10 border border-purple-500/30 text-xs text-purple-300 flex items-center justify-between">
+          <span class="flex items-center gap-2">
+            <span class="w-2 h-2 rounded-full bg-purple-400 animate-ping"></span>
+            Guardian Alerted: Priya Mehta
+          </span>
+          <span class="font-mono text-[10px] bg-purple-500/20 px-2 py-0.5 rounded">Pending Approval</span>
+        </div>
+
+        <div class="space-y-2 pt-2">
+          <button onclick="cancelHeldPayment()" class="w-full py-3.5 bg-slate-900 hover:bg-slate-800 text-white font-semibold rounded-2xl text-xs border border-slate-700 transition">
+            Cancel Payment & End Scam Call
+          </button>
+        </div>
+      </div>
+
+      <!-- STEP 4: RESOLUTION / SUCCESS SCREEN -->
+      <div id="step-resolved" class="hidden glass-card rounded-3xl p-6 border border-emerald-500/40 bg-emerald-500/10 text-center space-y-4">
+        <div class="w-16 h-16 rounded-full bg-emerald-500/20 border-2 border-emerald-500 text-emerald-400 flex items-center justify-center mx-auto text-2xl font-bold">
+          ✓
+        </div>
+        <div>
+          <h3 class="text-xl font-bold text-white" id="resolved-title">Transaction Authorized</h3>
+          <p class="text-xs text-slate-300 mt-1" id="resolved-desc">Payment completed under guardian safety approval.</p>
+        </div>
+        <button onclick="resetMemberFlow()" class="w-full py-3.5 bg-emerald-500 text-slate-950 font-bold rounded-2xl text-xs transition">
+          New Payment
+        </button>
+      </div>
+
+    </div>
+
+    <!-- BOTTOM APP NAVIGATION -->
+    <div class="pb-safe pt-2 border-t border-slate-800/80 flex justify-around text-xs text-slate-400">
+      <button class="flex flex-col items-center gap-1 text-emerald-400 font-bold">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+        Pay
+      </button>
+      <a href="guardian.html" class="flex flex-col items-center gap-1 hover:text-white transition">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+        Guardian
+      </a>
+      <a href="child.html" class="flex flex-col items-center gap-1 hover:text-white transition">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+        Child
+      </a>
+    </div>
+
+  </main>
+
+  <!-- TOAST -->
+  <div id="m-toast" class="fixed bottom-16 left-4 right-4 z-50 transform translate-y-24 opacity-0 transition-all duration-300 pointer-events-none">
+    <div class="glass-card bg-slate-900 border border-slate-700 text-white p-3.5 rounded-2xl shadow-2xl flex items-center gap-3">
+      <div id="m-toast-icon" class="w-7 h-7 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center font-bold text-sm">✓</div>
+      <div>
+        <div id="m-toast-title" class="font-bold text-xs">Synchronized</div>
+        <div id="m-toast-desc" class="text-[11px] text-slate-400">Action sent to Guardian & Admin</div>
+      </div>
+    </div>
+  </div>
+
+  <script src="shared-sync.js"></script>
+  <script>
+    function renderCallBanner(activeCall) {
+      const banner = document.getElementById('member-call-banner');
+      if (!banner) return;
+      banner.innerHTML = activeCall ? `
+        <div class="p-2.5 rounded-2xl bg-rose-500/20 border border-rose-500/40 flex items-center justify-between text-xs text-rose-200 animate-pulse">
+          <span class="font-mono font-bold flex items-center gap-1.5">
+            <span class="w-2 h-2 rounded-full bg-rose-500"></span>
+            📞 IN ACTIVE CALL &bull; 24:18 (Scammer line)
+          </span>
+          <button onclick="PayShieldSync.toggleCall(false)" class="text-[10px] bg-rose-500 text-white px-2 py-0.5 rounded font-mono font-bold">End Call</button>
+        </div>
+      ` : `
+        <div class="p-2.5 rounded-2xl bg-slate-900 border border-slate-800 flex items-center justify-between text-xs text-slate-400">
+          <span>No active phone call detected</span>
+          <button onclick="PayShieldSync.toggleCall(true)" class="text-[10px] bg-slate-800 hover:bg-slate-700 text-slate-200 px-2 py-0.5 rounded font-mono">+ Simulate Call</button>
+        </div>
+      `;
+    }
+
+    function fillScenario(scen) {
+      if (scen === 'digital-arrest') {
+        document.getElementById('m-payee').value = 'Inspector R. Sharma (CBI Verification)';
+        document.getElementById('m-upi').value = 'cbi.verification@okaxis';
+        document.getElementById('m-amount').value = 85000;
+        document.getElementById('m-reason').value = 'Government verification penalty under CBI arrest order';
+        PayShieldSync.toggleCall(true);
+      } else {
+        document.getElementById('m-payee').value = 'BigBasket Supermarket';
+        document.getElementById('m-upi').value = 'bigbasket@icici';
+        document.getElementById('m-amount').value = 600;
+        document.getElementById('m-reason').value = 'Weekly fresh vegetables and groceries';
+        PayShieldSync.toggleCall(false);
+      }
+    }
+
+    function goToSafetyAssessment() {
+      const amt = parseFloat(document.getElementById('m-amount').value) || 85000;
+      const state = PayShieldSync.getState();
+
+      if (amt > 25000 || state.activeCall) {
+        document.getElementById('step-form').classList.add('hidden');
+        document.getElementById('step-questions').classList.remove('hidden');
+      } else {
+        // Safe payment
+        PayShieldSync.adminReleaseHold('CASE-8841');
+        document.getElementById('step-form').classList.add('hidden');
+        document.getElementById('resolved-title').innerText = 'Payment Successful';
+        document.getElementById('resolved-desc').innerText = `₹${amt} sent securely to ${document.getElementById('m-payee').value}`;
+        document.getElementById('step-resolved').classList.remove('hidden');
+      }
+    }
+
+    function submitSafetyAssessment() {
+      const amt = parseFloat(document.getElementById('m-amount').value) || 85000;
+      const payee = document.getElementById('m-payee').value;
+      const upi = document.getElementById('m-upi').value;
+
+      PayShieldSync.triggerPaymentHeld({
+        amount: amt,
+        payee: payee,
+        upi: upi,
+        riskScore: 0.98,
+        user: 'Aarav Mehta',
+        tags: ['Amount 21x usual', 'On a call', 'New payee']
+      });
+
+      document.getElementById('step-questions').classList.add('hidden');
+      document.getElementById('step-held').classList.remove('hidden');
+      showToast('🚨 Payment Interrupted', 'Dispatched real-time alert to Guardian Priya.');
+    }
+
+    function cancelHeldPayment() {
+      PayShieldSync.guardianDeny('Member (Aarav)');
+      PayShieldSync.toggleCall(false);
+      resetMemberFlow();
+      showToast('Payment Cancelled', 'Funds preserved safely.');
+    }
+
+    function resetMemberFlow() {
+      document.getElementById('step-form').classList.remove('hidden');
+      document.getElementById('step-questions').classList.add('hidden');
+      document.getElementById('step-held').classList.add('hidden');
+      document.getElementById('step-resolved').classList.add('hidden');
+    }
+
+    function showToast(title, desc) {
+      const t = document.getElementById('m-toast');
+      document.getElementById('m-toast-title').innerText = title;
+      document.getElementById('m-toast-desc').innerText = desc;
+      t.classList.remove('translate-y-24', 'opacity-0');
+      setTimeout(() => t.classList.add('translate-y-24', 'opacity-0'), 3000);
+    }
+
+    // Sync state
+    PayShieldSync.subscribe(({ type, state }) => {
+      renderCallBanner(state.activeCall);
+
+      if (state.held && state.currentCase.status === 'HELD') {
+        document.getElementById('step-form').classList.add('hidden');
+        document.getElementById('step-questions').classList.add('hidden');
+        document.getElementById('step-held').classList.remove('hidden');
+        document.getElementById('step-resolved').classList.add('hidden');
+      } else if (state.currentCase.status === 'APPROVED') {
+        document.getElementById('step-held').classList.add('hidden');
+        document.getElementById('step-form').classList.add('hidden');
+        document.getElementById('step-questions').classList.add('hidden');
+        document.getElementById('resolved-title').innerText = 'Guardian Approved';
+        document.getElementById('resolved-desc').innerText = 'Priya Mehta authorized this transaction.';
+        document.getElementById('step-resolved').classList.remove('hidden');
+      } else if (state.currentCase.status === 'DENIED') {
+        document.getElementById('step-held').classList.add('hidden');
+        document.getElementById('step-form').classList.remove('hidden');
+        showToast('Transfer Denied', 'Coercion intercepted. Payment cancelled.');
+      } else if (state.currentCase.status === 'FROZEN') {
+        document.getElementById('step-held').classList.remove('hidden');
+        showToast('Account Frozen', 'SOC Administrator locked account for safety.');
+      }
+    });
+  </script>
+</body>
+</html>

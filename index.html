@@ -1,0 +1,891 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PayShield · FIN-11 Coerced Payment Interruption</title>
+  
+  <meta name="theme-color" content="#080C14">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  
+  <!-- Auto-redirect to mobile view on small screens if desired -->
+  <script>
+    if (window.innerWidth < 768 && !window.location.search.includes('desktop')) {
+      window.location.href = 'mobile.html';
+    }
+  </script>
+
+  <script src="https://www.gstatic.com/antigravity/web/dev/tailwindcss.min.js"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap');
+    
+    :root {
+      --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+    }
+    
+    body {
+      font-family: var(--font-sans);
+      background-color: #080C14;
+      color: #E2E8F0;
+      overflow-x: hidden;
+    }
+
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #0B0F19;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #1E293B;
+      border-radius: 3px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #334155;
+    }
+
+    .glass-card {
+      background: rgba(15, 23, 42, 0.7);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .glass-card-hover {
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .glass-card-hover:hover {
+      border-color: rgba(0, 229, 163, 0.3);
+      transform: translateY(-2px);
+      box-shadow: 0 12px 30px -10px rgba(0, 229, 163, 0.15);
+    }
+
+    .phone-frame {
+      width: 350px;
+      height: 700px;
+      border-radius: 44px;
+      box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.8), 0 0 0 9px #1E293B, 0 0 0 11px #0F172A;
+      position: relative;
+      overflow: hidden;
+      background: #090D16;
+    }
+
+    .phone-notch {
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      height: 22px;
+      width: 130px;
+      background: #1E293B;
+      border-bottom-left-radius: 12px;
+      border-bottom-right-radius: 12px;
+      z-index: 50;
+    }
+  </style>
+</head>
+<body class="min-h-screen text-slate-200 antialiased flex flex-col bg-[#070A11]">
+
+  <!-- TOP GLOBAL NAVIGATION -->
+  <header class="border-b border-slate-800/80 bg-[#0B0F19]/90 backdrop-blur-md sticky top-0 z-50 px-4 py-2.5">
+    <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-3">
+      
+      <!-- Brand -->
+      <div class="flex items-center gap-3">
+        <div class="w-8 h-8 rounded-lg bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400 font-bold shadow-[0_0_15px_rgba(16,185,129,0.25)]">
+          <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+            <line x1="10" y1="9" x2="10" y2="15" stroke="#FBBF24" stroke-width="2.5"/>
+            <line x1="14" y1="9" x2="14" y2="15" stroke="#FBBF24" stroke-width="2.5"/>
+          </svg>
+        </div>
+        <div>
+          <div class="flex items-center gap-2">
+            <span class="font-extrabold tracking-tight text-white text-base">Pay<span class="text-emerald-400">Shield</span></span>
+            <span class="text-[10px] font-mono bg-slate-800 text-slate-400 px-2 py-0.5 rounded-full border border-slate-700">FIN-11 · VIT PUNE</span>
+          </div>
+          <p class="text-[10px] text-slate-400 -mt-0.5">Between Pay and Paid, a pause that saves life savings</p>
+        </div>
+      </div>
+
+      <!-- Navigation Tabs -->
+      <div class="flex items-center gap-1 bg-slate-900/90 p-1 rounded-xl border border-slate-800/80 text-xs flex-wrap">
+        <button onclick="switchTab('hub')" id="tab-hub" class="px-3 py-1.5 rounded-lg font-semibold bg-emerald-500 text-slate-950 transition">
+          Live Arena
+        </button>
+        <a href="admin.html" class="px-3 py-1.5 rounded-lg bg-blue-500/10 border border-blue-500/30 text-blue-300 font-bold hover:bg-blue-500/20 transition flex items-center gap-1">
+          <span>💻</span> Admin Panel (Laptop)
+        </a>
+        <a href="member.html" class="px-3 py-1.5 rounded-lg bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 font-semibold hover:bg-emerald-500/20 transition flex items-center gap-1">
+          <span>📱</span> Member App
+        </a>
+        <a href="guardian.html" class="px-3 py-1.5 rounded-lg bg-purple-500/10 border border-purple-500/30 text-purple-300 font-semibold hover:bg-purple-500/20 transition flex items-center gap-1">
+          <span>🛡️</span> Guardian App
+          <span id="nav-g-badge" class="bg-rose-500 text-white text-[9px] font-bold px-1.5 rounded-full">1</span>
+        </a>
+        <a href="child.html" class="px-3 py-1.5 rounded-lg bg-amber-500/10 border border-amber-500/30 text-amber-300 font-semibold hover:bg-amber-500/20 transition flex items-center gap-1">
+          <span>👶</span> Child App
+        </a>
+      </div>
+
+      <!-- Action & QR Code Modal Button -->
+      <div class="flex items-center gap-2">
+        <button onclick="openMobileQRModal()" class="text-xs bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 px-3 py-1.5 rounded-lg font-medium transition flex items-center gap-1.5">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z"/></svg>
+          Open on Phone
+        </button>
+        <button onclick="triggerScamSimulation()" class="text-xs bg-rose-500/10 hover:bg-rose-500/20 text-rose-300 border border-rose-500/30 px-3 py-1.5 rounded-lg font-medium transition flex items-center gap-1">
+          <span class="w-2 h-2 rounded-full bg-rose-500 animate-ping"></span>
+          Simulate Scam Call
+        </button>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- MAIN VIEW CONTAINER -->
+  <main class="flex-1 max-w-[1600px] w-full mx-auto p-4 md:p-6 flex flex-col">
+
+    <!-- ========================================== -->
+    <!-- VIEW: LIVE SYNC HUB                        -->
+    <!-- ========================================== -->
+    <div id="view-hub" class="space-y-6">
+      
+      <div class="bg-gradient-to-r from-slate-900 via-slate-900/90 to-slate-900 border border-slate-800 rounded-2xl p-4 flex flex-col md:flex-row items-center justify-between gap-4">
+        <div class="flex items-center gap-3">
+          <div class="p-2.5 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400">
+            <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          </div>
+          <div>
+            <h2 class="text-base font-bold text-white flex items-center gap-2">
+              FIN-11 Live Interception Arena &bull; Tri-Perspective Sync
+            </h2>
+            <p class="text-xs text-slate-400">Interact with the Victim Phone, Guardian Phone, and Risk Operations Desk simultaneously.</p>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-2">
+          <span class="text-xs text-slate-400 font-mono">Current Script:</span>
+          <span class="text-xs font-semibold text-rose-400 bg-rose-500/10 px-2.5 py-1 rounded-lg border border-rose-500/20">
+            Digital Arrest (₹85,000)
+          </span>
+        </div>
+      </div>
+
+      <!-- 4 DEDICATED APPS QUICK LAUNCH GRID -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        
+        <!-- 1. Laptop Admin Panel -->
+        <a href="admin.html" class="glass-card p-4 rounded-2xl border border-blue-500/30 hover:border-blue-400/70 hover:bg-blue-500/5 transition group flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between mb-2">
+              <span class="text-xs font-mono bg-blue-500/20 text-blue-300 px-2 py-0.5 rounded font-bold">LAPTOP SOC</span>
+              <span class="text-lg">💻</span>
+            </div>
+            <div class="font-extrabold text-white text-base group-hover:text-blue-300 transition">Admin Risk Panel</div>
+            <p class="text-xs text-slate-400 mt-1 leading-relaxed">Dedicated full-screen desk for Fraud Ops, KYC queue, case triage & Contradiction Engine.</p>
+          </div>
+          <div class="mt-3 pt-2 border-t border-slate-800 flex items-center justify-between text-xs text-blue-400 font-semibold">
+            <span>Open Admin Panel</span>
+            <span class="group-hover:translate-x-1 transition">&rarr;</span>
+          </div>
+        </a>
+
+        <!-- 2. Member Phone App -->
+        <a href="member.html" class="glass-card p-4 rounded-2xl border border-emerald-500/30 hover:border-emerald-400/70 hover:bg-emerald-500/5 transition group flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between mb-2">
+              <span class="text-xs font-mono bg-emerald-500/20 text-emerald-300 px-2 py-0.5 rounded font-bold">MOBILE APP</span>
+              <span class="text-lg">📱</span>
+            </div>
+            <div class="font-extrabold text-white text-base group-hover:text-emerald-300 transition">Member App (Aarav)</div>
+            <p class="text-xs text-slate-400 mt-1 leading-relaxed">Customer checkout app with active scam call detection, reflection timer & safety quiz.</p>
+          </div>
+          <div class="mt-3 pt-2 border-t border-slate-800 flex items-center justify-between text-xs text-emerald-400 font-semibold">
+            <span>Open Member App</span>
+            <span class="group-hover:translate-x-1 transition">&rarr;</span>
+          </div>
+        </a>
+
+        <!-- 3. Guardian Phone App -->
+        <a href="guardian.html" class="glass-card p-4 rounded-2xl border border-purple-500/30 hover:border-purple-400/70 hover:bg-purple-500/5 transition group flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between mb-2">
+              <span class="text-xs font-mono bg-purple-500/20 text-purple-300 px-2 py-0.5 rounded font-bold">MOBILE APP</span>
+              <span class="text-lg">🛡️</span>
+            </div>
+            <div class="font-extrabold text-white text-base group-hover:text-purple-300 transition">Guardian App (Priya)</div>
+            <p class="text-xs text-slate-400 mt-1 leading-relaxed">Instant coercion push notifications, scam-busting call trigger, [Deny] & [Approve].</p>
+          </div>
+          <div class="mt-3 pt-2 border-t border-slate-800 flex items-center justify-between text-xs text-purple-400 font-semibold">
+            <span>Open Guardian App</span>
+            <span class="group-hover:translate-x-1 transition">&rarr;</span>
+          </div>
+        </a>
+
+        <!-- 4. Child Phone App -->
+        <a href="child.html" class="glass-card p-4 rounded-2xl border border-amber-500/30 hover:border-amber-400/70 hover:bg-amber-500/5 transition group flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between mb-2">
+              <span class="text-xs font-mono bg-amber-500/20 text-amber-300 px-2 py-0.5 rounded font-bold">MOBILE APP</span>
+              <span class="text-lg">👶</span>
+            </div>
+            <div class="font-extrabold text-white text-base group-hover:text-amber-300 transition">Child App (Anaya)</div>
+            <p class="text-xs text-slate-400 mt-1 leading-relaxed">Pocket money safeguards, parental consent requests, unknown payee block & SOS.</p>
+          </div>
+          <div class="mt-3 pt-2 border-t border-slate-800 flex items-center justify-between text-xs text-amber-400 font-semibold">
+            <span>Open Child App</span>
+            <span class="group-hover:translate-x-1 transition">&rarr;</span>
+          </div>
+        </a>
+
+      </div>
+
+      <!-- 3 Columns: Member Phone, Guardian Phone, Admin Console -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+        
+        <!-- Left: Member Phone -->
+        <div class="lg:col-span-4 flex flex-col items-center">
+          <div class="flex items-center justify-between w-full max-w-[350px] mb-2 px-1 text-xs">
+            <span class="font-bold text-emerald-400 uppercase tracking-wider flex items-center gap-1.5">
+              <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+              Victim: Aarav Mehta
+            </span>
+            <span class="text-[11px] font-mono text-slate-500">MEMBER APP</span>
+          </div>
+
+          <div class="phone-frame shadow-2xl relative flex flex-col border border-slate-700">
+            <div class="phone-notch"></div>
+            
+            <div id="hub-member-content" class="flex-1 flex flex-col pt-7 overflow-y-auto">
+              <!-- Rendered by JS -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Middle: Guardian Phone (Screenshot 2) -->
+        <div class="lg:col-span-4 flex flex-col items-center">
+          <div class="flex items-center justify-between w-full max-w-[350px] mb-2 px-1 text-xs">
+            <span class="font-bold text-purple-400 uppercase tracking-wider flex items-center gap-1.5">
+              <span class="w-2 h-2 rounded-full bg-purple-400"></span>
+              Guardian: Rajiv Mehta
+            </span>
+            <span class="text-[11px] font-mono text-purple-400 bg-purple-500/10 px-2 py-0.5 rounded border border-purple-500/20">Consent Gated</span>
+          </div>
+
+          <div class="phone-frame shadow-2xl relative flex flex-col border border-purple-500/30">
+            <div class="phone-notch"></div>
+
+            <div id="hub-guardian-content" class="flex-1 flex flex-col pt-7 overflow-y-auto">
+              <!-- Rendered by JS -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: Admin Console Widget (Screenshot 3) -->
+        <div class="lg:col-span-4 flex flex-col">
+          <div class="flex items-center justify-between w-full mb-2 px-1 text-xs">
+            <span class="font-bold text-blue-400 uppercase tracking-wider flex items-center gap-1.5">
+              <span class="w-2 h-2 rounded-full bg-blue-400"></span>
+              Admin Risk Console
+            </span>
+            <span class="text-[11px] font-mono text-slate-500">Meera Iyer (Risk Ops)</span>
+          </div>
+
+          <div class="glass-card rounded-2xl border border-slate-800 p-4 space-y-4 shadow-xl">
+            <!-- 4 Metrics -->
+            <div class="grid grid-cols-2 gap-2 text-xs">
+              <div class="bg-slate-900/90 p-3 rounded-xl border border-slate-800">
+                <div class="text-2xl font-extrabold text-white">18</div>
+                <div class="text-[11px] text-slate-400">KYC Pending</div>
+              </div>
+              <div class="bg-slate-900/90 p-3 rounded-xl border border-rose-500/20">
+                <div class="text-2xl font-extrabold text-rose-500" id="hub-held-count">2</div>
+                <div class="text-[11px] text-rose-400 flex items-center gap-1">
+                  <span class="w-1.5 h-1.5 rounded-full bg-rose-500 animate-pulse"></span>
+                  Payments Held
+                </div>
+              </div>
+              <div class="bg-slate-900/90 p-3 rounded-xl border border-slate-800">
+                <div class="text-xl font-bold text-emerald-400">1.4%</div>
+                <div class="text-[10px] text-slate-400">False-Block &bull; Budget 2%</div>
+              </div>
+              <div class="bg-slate-900/90 p-3 rounded-xl border border-slate-800">
+                <div class="text-xl font-bold text-white">46s</div>
+                <div class="text-[10px] text-slate-400">Median Review Time</div>
+              </div>
+            </div>
+
+            <!-- Interventions Ladder -->
+            <div class="bg-slate-900/80 p-3.5 rounded-xl border border-slate-800 space-y-2 text-xs">
+              <div class="text-[10px] font-mono uppercase text-slate-400 flex justify-between">
+                <span>Interventions Ladder</span>
+                <span>Sample: 167</span>
+              </div>
+              <div>
+                <div class="flex justify-between text-[11px] mb-0.5"><span>Pass (0-24)</span> <span class="font-mono text-emerald-400">92</span></div>
+                <div class="w-full bg-slate-800 h-2 rounded-full overflow-hidden"><div class="bg-emerald-400 h-full" style="width: 55%"></div></div>
+              </div>
+              <div>
+                <div class="flex justify-between text-[11px] mb-0.5"><span>Nudge (25-49)</span> <span class="font-mono text-lime-400">41</span></div>
+                <div class="w-full bg-slate-800 h-2 rounded-full overflow-hidden"><div class="bg-lime-400 h-full" style="width: 25%"></div></div>
+              </div>
+              <div>
+                <div class="flex justify-between text-[11px] mb-0.5"><span>Question (50-74)</span> <span class="font-mono text-amber-400">22</span></div>
+                <div class="w-full bg-slate-800 h-2 rounded-full overflow-hidden"><div class="bg-amber-400 h-full" style="width: 13%"></div></div>
+              </div>
+              <div>
+                <div class="flex justify-between text-[11px] mb-0.5"><span>Cooling-off Hold (75-90)</span> <span class="font-mono text-orange-400">9</span></div>
+                <div class="w-full bg-slate-800 h-2 rounded-full overflow-hidden"><div class="bg-orange-500 h-full" style="width: 5%"></div></div>
+              </div>
+              <div>
+                <div class="flex justify-between text-[11px] mb-0.5"><span>Trusted Contact (90+)</span> <span class="font-mono text-rose-400" id="hub-ladder-trusted">3</span></div>
+                <div class="w-full bg-slate-800 h-2 rounded-full overflow-hidden"><div class="bg-rose-500 h-full" style="width: 3%"></div></div>
+              </div>
+            </div>
+
+            <!-- Needs Attention live list -->
+            <div class="bg-slate-900/80 p-3 rounded-xl border border-slate-800">
+              <div class="text-[10px] font-mono text-slate-400 uppercase mb-2 flex justify-between">
+                <span>Needs Attention</span>
+                <span class="text-emerald-400">Synced</span>
+              </div>
+              <div id="hub-cases-queue" class="space-y-2">
+                <!-- Injected via JS -->
+              </div>
+            </div>
+
+            <button onclick="switchTab('admin')" class="w-full py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-xl text-xs font-semibold transition">
+              Open Full Desktop Risk Console &rarr;
+            </button>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- ========================================== -->
+    <!-- VIEW: ROLE SELECTOR HUB (Screenshot 1)     -->
+    <!-- ========================================== -->
+    <div id="view-roles" class="hidden max-w-4xl mx-auto py-10 w-full text-center">
+      <div class="inline-block text-xs font-mono uppercase tracking-widest text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-3 py-1 rounded-full mb-3">
+        CHOOSE A VIEW
+      </div>
+      <h1 class="text-4xl md:text-5xl font-extrabold text-white tracking-tight mb-2">Who is signing in?</h1>
+      <p class="text-slate-400 text-sm max-w-md mx-auto mb-10">Each person gets the screens they need. Pick one to explore.</p>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 text-left">
+        <div onclick="switchTab('admin')" class="glass-card glass-card-hover p-6 rounded-2xl cursor-pointer">
+          <div class="w-12 h-12 rounded-xl bg-blue-500/10 text-blue-400 flex items-center justify-center mb-4 text-xl">💻</div>
+          <h3 class="text-xl font-bold text-white">Admin</h3>
+          <p class="text-xs text-slate-400 mb-4">Risk and KYC team</p>
+          <div class="text-[10px] font-mono text-blue-400 uppercase">DESKTOP CONSOLE</div>
+        </div>
+
+        <div onclick="window.location.href='mobile.html'" class="glass-card glass-card-hover p-6 rounded-2xl cursor-pointer">
+          <div class="w-12 h-12 rounded-xl bg-emerald-500/10 text-emerald-400 flex items-center justify-center mb-4 text-xl">👤</div>
+          <h3 class="text-xl font-bold text-white">Member</h3>
+          <p class="text-xs text-slate-400 mb-4">Account holder who pays</p>
+          <div class="text-[10px] font-mono text-emerald-400 uppercase">MOBILE APP</div>
+        </div>
+
+        <div onclick="window.location.href='mobile.html'" class="glass-card glass-card-hover p-6 rounded-2xl cursor-pointer">
+          <div class="w-12 h-12 rounded-xl bg-amber-500/10 text-amber-400 flex items-center justify-center mb-4 text-xl">👶</div>
+          <h3 class="text-xl font-bold text-white">Child</h3>
+          <p class="text-xs text-slate-400 mb-4">Under 18, linked to guardian</p>
+          <div class="text-[10px] font-mono text-amber-400 uppercase">MOBILE APP</div>
+        </div>
+
+        <div onclick="switchTab('guardian')" class="glass-card glass-card-hover p-6 rounded-2xl cursor-pointer border-purple-500/30">
+          <div class="w-12 h-12 rounded-xl bg-purple-500/10 text-purple-400 flex items-center justify-center mb-4 text-xl">🛡️</div>
+          <h3 class="text-xl font-bold text-white">Guardian</h3>
+          <p class="text-xs text-slate-400 mb-4">Trusted contact &amp; family limits</p>
+          <div class="text-[10px] font-mono text-purple-400 uppercase">MOBILE APP</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- VIEW: FULL ADMIN CONSOLE (Screenshot 3)    -->
+    <!-- ========================================== -->
+    <div id="view-admin" class="hidden flex-1 flex flex-col">
+      <div class="bg-slate-900 border border-slate-800 rounded-t-2xl px-4 py-2 flex items-center gap-3 text-xs text-slate-400">
+        <div class="flex items-center gap-1.5">
+          <div class="w-3 h-3 rounded-full bg-rose-500"></div>
+          <div class="w-3 h-3 rounded-full bg-amber-500"></div>
+          <div class="w-3 h-3 rounded-full bg-emerald-500"></div>
+        </div>
+        <div class="flex-1 max-w-md bg-slate-950 border border-slate-800 rounded-lg px-3 py-1 font-mono text-[11px] text-slate-300">
+          https://console.payshield.example/overview
+        </div>
+        <button onclick="switchTab('hub')" class="text-xs text-slate-400 hover:text-white ml-auto">
+          &larr; Back to Live Arena
+        </button>
+      </div>
+
+      <div class="bg-[#0B0F19] border-x border-b border-slate-800 rounded-b-2xl flex-1 flex flex-col md:flex-row min-h-[680px]">
+        <aside class="w-full md:w-56 border-r border-slate-800 p-4 flex flex-col justify-between">
+          <div>
+            <div class="flex items-center gap-2 mb-6">
+              <div class="w-6 h-6 rounded bg-emerald-500/10 text-emerald-400 flex items-center justify-center font-bold text-xs">PS</div>
+              <span class="font-bold text-white text-sm">Risk console</span>
+            </div>
+            <nav class="space-y-1 text-xs">
+              <button class="w-full text-left px-3 py-2 rounded-xl bg-slate-800 text-white font-medium">Overview</button>
+              <button class="w-full text-left px-3 py-2 rounded-xl text-slate-400 hover:text-white flex justify-between">KYC queue <span class="font-mono">18</span></button>
+              <button class="w-full text-left px-3 py-2 rounded-xl text-slate-400 hover:text-white flex justify-between">Cases <span class="bg-rose-500 text-white text-[9px] px-1.5 rounded-full font-bold">2</span></button>
+              <button class="w-full text-left px-3 py-2 rounded-xl text-slate-400 hover:text-white">Policy</button>
+            </nav>
+          </div>
+          <div class="pt-4 border-t border-slate-800 flex items-center gap-2.5 text-xs">
+            <div class="w-7 h-7 rounded-full bg-slate-800 flex items-center justify-center font-bold">MI</div>
+            <div>
+              <div class="font-semibold text-white">Meera Iyer</div>
+              <div class="text-[10px] text-slate-500">Risk Ops &bull; sample</div>
+            </div>
+          </div>
+        </aside>
+
+        <div class="flex-1 p-6 space-y-6">
+          <h2 class="text-2xl font-bold text-white">Overview</h2>
+          <div class="grid grid-cols-1 sm:grid-cols-4 gap-4">
+            <div class="glass-card p-5 rounded-2xl border border-slate-800"><div class="text-3xl font-extrabold text-white">18</div><div class="text-xs text-slate-400">KYC pending</div></div>
+            <div class="glass-card p-5 rounded-2xl border border-rose-500/20 bg-rose-500/5"><div class="text-3xl font-extrabold text-rose-500" id="desk-held-count">2</div><div class="text-xs text-rose-400">Payments held</div></div>
+            <div class="glass-card p-5 rounded-2xl border border-slate-800"><div class="text-3xl font-extrabold text-white">1.4%</div><div class="text-xs text-slate-400">False-block rate &bull; budget 2%</div></div>
+            <div class="glass-card p-5 rounded-2xl border border-slate-800"><div class="text-3xl font-extrabold text-white">46s</div><div class="text-xs text-slate-400">Median review time</div></div>
+          </div>
+
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+            <div class="lg:col-span-7 glass-card p-6 rounded-2xl border border-slate-800 space-y-4">
+              <div class="text-xs font-mono uppercase text-slate-400">INTERVENTIONS BY LADDER LEVEL &bull; SAMPLE</div>
+              <div class="space-y-4 text-xs">
+                <div><div class="flex justify-between mb-1"><span>Pass</span><span class="font-mono text-white">92</span></div><div class="w-full bg-slate-900 h-3 rounded-full overflow-hidden"><div class="bg-[#00E5A3] h-full" style="width: 55%"></div></div></div>
+                <div><div class="flex justify-between mb-1"><span>Nudge</span><span class="font-mono text-white">41</span></div><div class="w-full bg-slate-900 h-3 rounded-full overflow-hidden"><div class="bg-[#84CC16] h-full" style="width: 25%"></div></div></div>
+                <div><div class="flex justify-between mb-1"><span>Question</span><span class="font-mono text-white">22</span></div><div class="w-full bg-slate-900 h-3 rounded-full overflow-hidden"><div class="bg-[#F59E0B] h-full" style="width: 13%"></div></div></div>
+                <div><div class="flex justify-between mb-1"><span>Cooling-off hold</span><span class="font-mono text-white">9</span></div><div class="w-full bg-slate-900 h-3 rounded-full overflow-hidden"><div class="bg-[#EA580C] h-full" style="width: 6%"></div></div></div>
+                <div><div class="flex justify-between mb-1"><span>Trusted contact</span><span class="font-mono text-white">3</span></div><div class="w-full bg-slate-900 h-3 rounded-full overflow-hidden"><div class="bg-[#EF4444] h-full" style="width: 2%"></div></div></div>
+              </div>
+            </div>
+
+            <div class="lg:col-span-5 glass-card p-6 rounded-2xl border border-slate-800">
+              <div class="text-xs font-mono uppercase text-slate-400 mb-4">NEEDS ATTENTION</div>
+              <div id="desk-attention-queue" class="space-y-3">
+                <!-- Injected via JS -->
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- VIEW: STANDALONE GUARDIAN SCREEN (Photo 2) -->
+    <!-- ========================================== -->
+    <div id="view-guardian" class="hidden max-w-md mx-auto py-6">
+      <div class="phone-frame border border-purple-500/30 mx-auto">
+        <div class="phone-notch"></div>
+        <div id="guardian-standalone-mount" class="flex-1 flex flex-col pt-7 overflow-y-auto">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- MODAL: QR CODE TO OPEN ON REAL MOBILE -->
+  <div id="qr-modal" class="fixed inset-0 bg-black/85 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="glass-card bg-[#0D1322] border border-slate-700 max-w-md w-full rounded-3xl p-6 text-center space-y-4 shadow-2xl relative">
+      <button onclick="closeMobileQRModal()" class="absolute top-5 right-5 text-slate-400 hover:text-white p-1">✕</button>
+      
+      <div class="w-12 h-12 rounded-2xl bg-purple-500/10 text-purple-400 border border-purple-500/30 flex items-center justify-center mx-auto text-2xl font-bold">
+        📱
+      </div>
+
+      <div>
+        <h3 class="text-xl font-bold text-white">Open on Your Real Phone</h3>
+        <p class="text-xs text-slate-400 mt-1">Scan or open the mobile web app to test the 3 phone options.</p>
+      </div>
+
+      <!-- Generated QR Code SVG -->
+      <div class="p-4 bg-white rounded-2xl inline-block shadow-inner mx-auto">
+        <svg id="qr-svg" class="w-48 h-48" viewBox="0 0 100 100" fill="black">
+          <!-- Stylized QR pattern -->
+          <rect width="100" height="100" fill="white"/>
+          <path d="M10 10 h25 v25 h-25 z M15 15 h15 v15 h-15 z M20 20 h5 v5 h-5 z" fill="black"/>
+          <path d="M65 10 h25 v25 h-25 z M70 15 h15 v15 h-15 z M75 20 h5 v5 h-5 z" fill="black"/>
+          <path d="M10 65 h25 v25 h-25 z M15 70 h15 v15 h-15 z M20 75 h5 v5 h-5 z" fill="black"/>
+          <!-- Data blocks -->
+          <rect x="42" y="10" width="16" height="5"/>
+          <rect x="42" y="20" width="8" height="12"/>
+          <rect x="15" y="42" width="20" height="6"/>
+          <rect x="45" y="42" width="10" height="10"/>
+          <rect x="62" y="42" width="28" height="6"/>
+          <rect x="42" y="60" width="16" height="8"/>
+          <rect x="65" y="65" width="25" height="25" fill="#10B981"/>
+          <rect x="72" y="72" width="11" height="11" fill="white"/>
+          <rect x="75" y="75" width="5" height="5" fill="#10B981"/>
+        </svg>
+      </div>
+
+      <div class="space-y-2">
+        <a href="member.html" target="_blank" class="block w-full py-2.5 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold rounded-xl text-xs transition">
+          📱 Open Member App (Aarav) &rarr;
+        </a>
+        <a href="guardian.html" target="_blank" class="block w-full py-2.5 bg-purple-600 hover:bg-purple-500 text-white font-bold rounded-xl text-xs transition">
+          🛡️ Open Guardian App (Priya) &rarr;
+        </a>
+        <a href="child.html" target="_blank" class="block w-full py-2.5 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold rounded-xl text-xs transition">
+          👶 Open Child App (Anaya) &rarr;
+        </a>
+        <a href="admin.html" target="_blank" class="block w-full py-2.5 bg-blue-600 hover:bg-blue-500 text-white font-bold rounded-xl text-xs transition">
+          💻 Open Laptop Admin SOC Panel &rarr;
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOAST NOTIFICATION -->
+  <div id="hub-toast" class="fixed bottom-5 right-5 z-50 transform translate-y-24 opacity-0 transition-all duration-300 pointer-events-none">
+    <div class="glass-card bg-slate-900 border border-slate-700 text-white px-4 py-3 rounded-2xl shadow-2xl flex items-center gap-3">
+      <div id="h-toast-icon" class="w-8 h-8 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center font-bold">✓</div>
+      <div>
+        <div id="h-toast-title" class="font-bold text-xs">Synchronized</div>
+        <div id="h-toast-desc" class="text-[11px] text-slate-400">Action broadcast across all roles</div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const bus = new BroadcastChannel('payshield_sync_bus');
+
+    const GlobalStore = {
+      held: true,
+      amount: 85000,
+      onCall: true,
+      memberStep: 'form',
+      cases: [
+        { id: 'case-aarav', name: 'Aarav Mehta', amount: 85000, time: '4m ago', status: 'Held', initials: 'AM' },
+        { id: 'case-kavita', name: 'Kavita Joshi', amount: 32000, time: '18m ago', status: 'Held', initials: 'KJ' },
+        { id: 'case-nitin', name: 'Nitin Rao', amount: 9500, time: '1h ago', status: 'Released', initials: 'NR' }
+      ]
+    };
+
+    function switchTab(tab) {
+      ['hub', 'roles', 'admin', 'guardian'].forEach(t => {
+        const el = document.getElementById(`view-${t}`);
+        const btn = document.getElementById(`tab-${t}`);
+        if (el) el.classList.add('hidden');
+        if (btn) {
+          btn.classList.remove('bg-emerald-500', 'text-slate-950', 'font-semibold');
+          btn.classList.add('text-slate-400');
+        }
+      });
+
+      const activeEl = document.getElementById(`view-${tab}`);
+      const activeBtn = document.getElementById(`tab-${tab}`);
+      if (activeEl) activeEl.classList.remove('hidden');
+      if (activeBtn) {
+        activeBtn.classList.add('bg-emerald-500', 'text-slate-950', 'font-semibold');
+        activeBtn.classList.remove('text-slate-400');
+      }
+
+      renderHub();
+    }
+
+    function renderHub() {
+      // 1. Render Member Phone
+      const memberContainer = document.getElementById('hub-member-content');
+      if (memberContainer) {
+        let mHtml = `
+          <div class="px-4 pb-2 flex justify-between items-center text-xs text-slate-400">
+            <span class="font-bold text-white">9:41</span>
+            <span class="bg-emerald-500/10 text-emerald-400 text-[10px] px-2 py-0.5 rounded-full font-mono border border-emerald-500/20">PAYSHIELD</span>
+          </div>
+        `;
+
+        if (GlobalStore.onCall) {
+          mHtml += `
+            <div class="mx-3 mb-3 p-2 bg-rose-500/20 border border-rose-500/40 rounded-xl text-xs text-rose-300 flex justify-between items-center animate-pulse">
+              <span class="font-mono text-[11px] font-bold">📞 IN CALL &bull; 24:18</span>
+              <button onclick="toggleCall()" class="text-[10px] bg-rose-500 text-white px-2 py-0.5 rounded">End</button>
+            </div>
+          `;
+        } else {
+          mHtml += `
+            <div class="mx-3 mb-3 p-2 bg-slate-900 border border-slate-800 rounded-xl text-xs text-slate-400 flex justify-between items-center">
+              <span>No active call</span>
+              <button onclick="toggleCall()" class="text-[10px] bg-slate-800 text-slate-200 px-2 py-0.5 rounded">+ Simulate Call</button>
+            </div>
+          `;
+        }
+
+        if (GlobalStore.memberStep === 'form') {
+          mHtml += `
+            <div class="px-4 flex-1 flex flex-col justify-between">
+              <div class="space-y-3">
+                <h3 class="font-bold text-white text-base">Send Money</h3>
+                <div class="bg-slate-900/90 p-3 rounded-2xl border border-slate-800">
+                  <label class="text-[10px] text-slate-400">Payee</label>
+                  <div class="font-semibold text-white text-xs">Inspector R. Sharma (CBI)</div>
+                  <div class="text-[10px] font-mono text-emerald-400">cbi.verification@okaxis</div>
+                </div>
+                <div class="bg-slate-900/90 p-4 rounded-2xl border border-slate-800 text-center">
+                  <label class="text-[10px] text-slate-400">Amount</label>
+                  <div class="text-3xl font-extrabold text-white">₹85,000</div>
+                  <span class="text-[10px] text-rose-400">21x monthly avg</span>
+                </div>
+                <div class="bg-slate-900/90 p-3 rounded-2xl border border-slate-800">
+                  <label class="text-[10px] text-slate-400">Stated Purpose</label>
+                  <div class="text-xs text-slate-300">"Government verification penalty under CBI arrest order"</div>
+                </div>
+              </div>
+              <button onclick="submitMemberPayment()" class="w-full py-3 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold rounded-2xl text-xs transition">
+                Proceed to Review &rarr;
+              </button>
+            </div>
+          `;
+        } else if (GlobalStore.memberStep === 'held') {
+          mHtml += `
+            <div class="px-4 flex-1 flex flex-col justify-between bg-rose-950/20 p-3 rounded-2xl">
+              <div class="space-y-3 text-center">
+                <div class="text-3xl animate-bounce">🛑</div>
+                <h3 class="font-extrabold text-white text-lg">Payment Temporarily Held</h3>
+                <p class="text-xs text-rose-300">Coercion mismatch detected.</p>
+                <div class="bg-slate-900 p-3 rounded-2xl border border-rose-500/30 text-left text-xs space-y-1">
+                  <div class="text-rose-400 font-bold">≠ Story vs Facts Contradiction</div>
+                  <div class="text-slate-300">You stated: "Government verification"</div>
+                  <div class="text-rose-300">Registry: Individual account opened 2 days ago.</div>
+                </div>
+                <div class="p-2.5 bg-purple-500/10 border border-purple-500/30 rounded-xl text-xs text-purple-300 text-left">
+                  🛡️ Alert sent to Guardian Rajiv Mehta
+                </div>
+              </div>
+              <button onclick="cancelPayment()" class="w-full py-3 bg-rose-500 hover:bg-rose-600 text-white font-bold rounded-2xl text-xs">
+                Cancel Transfer &amp; Save ₹85,000
+              </button>
+            </div>
+          `;
+        } else {
+          mHtml += `
+            <div class="p-6 text-center space-y-3 flex-1 flex flex-col justify-center items-center">
+              <div class="text-4xl text-emerald-400">✓</div>
+              <h3 class="text-lg font-bold text-white">Payment Released</h3>
+              <button onclick="resetFlow()" class="px-4 py-2 bg-slate-800 text-white rounded-xl text-xs">Back</button>
+            </div>
+          `;
+        }
+        memberContainer.innerHTML = mHtml;
+      }
+
+      // 2. Render Guardian Phone (Screenshot 2)
+      const guardianContainer = document.getElementById('hub-guardian-content');
+      const guardianStandalone = document.getElementById('guardian-standalone-mount');
+      
+      let gHtml = `
+        <div class="px-5 pt-1 pb-3 flex justify-between items-center text-xs">
+          <span class="font-bold text-white">9:41</span>
+          <span class="bg-slate-800 text-slate-400 text-[10px] px-2 py-0.5 rounded-full font-mono border border-slate-700">SIMULATED</span>
+        </div>
+        <div class="px-5 mb-4 flex justify-between items-center">
+          <h2 class="text-2xl font-extrabold text-white">Alerts</h2>
+          <span class="bg-rose-500/20 text-rose-400 text-xs font-bold px-2.5 py-0.5 rounded-full border border-rose-500/30">
+            ${GlobalStore.held ? '1 needs you' : '0 pending'}
+          </span>
+        </div>
+        <div class="px-5 flex-1 flex flex-col justify-between overflow-y-auto">
+      `;
+
+      if (GlobalStore.held) {
+        gHtml += `
+          <div class="glass-card bg-[#111624] rounded-3xl p-4 border border-rose-500/30 shadow-2xl mb-4">
+            <div class="flex justify-between items-center mb-1">
+              <span class="text-sm font-semibold text-white">Aarav wants to pay</span>
+              <span class="text-[10px] font-mono text-rose-400 bg-rose-500/10 px-2 py-0.5 rounded-full border border-rose-500/20">risk 0.98</span>
+            </div>
+            <div class="text-3xl font-extrabold text-white my-2">₹85,000</div>
+            <p class="text-xs text-slate-400 mb-3">New payee ··4471, while on a call. The payment is held.</p>
+            <div class="flex flex-wrap gap-1 mb-4 text-[10px]">
+              <span class="bg-slate-900 border border-slate-700 text-slate-300 px-2 py-0.5 rounded-lg">Amount 21x usual</span>
+              <span class="bg-slate-900 border border-slate-700 text-slate-300 px-2 py-0.5 rounded-lg">On a call</span>
+              <span class="bg-slate-900 border border-slate-700 text-slate-300 px-2 py-0.5 rounded-lg">New payee</span>
+            </div>
+            <button onclick="callVictimPrompt()" class="w-full py-2.5 bg-slate-900 hover:bg-slate-800 border border-slate-700 rounded-xl text-xs font-semibold text-white mb-2 flex items-center justify-center gap-1.5">
+              📞 Call Aarav first
+            </button>
+            <div class="grid grid-cols-2 gap-2">
+              <button onclick="guardianDecision('deny')" class="py-2.5 bg-rose-500 hover:bg-rose-600 text-white font-bold rounded-xl text-xs transition">Deny</button>
+              <button onclick="guardianDecision('approve')" class="py-2.5 bg-[#A78BFA] hover:bg-[#906CF5] text-slate-950 font-bold rounded-xl text-xs transition">Approve</button>
+            </div>
+          </div>
+        `;
+      } else {
+        gHtml += `
+          <div class="glass-card rounded-2xl p-4 text-center border border-slate-800 mb-4">
+            <div class="text-2xl text-emerald-400 mb-1">✓</div>
+            <div class="text-xs font-bold text-white">No Emergency Holds</div>
+          </div>
+        `;
+      }
+
+      gHtml += `
+          <div>
+            <div class="text-[10px] font-mono uppercase text-slate-500 mb-2">EARLIER</div>
+            <div class="space-y-2 text-xs">
+              <div class="p-2.5 bg-slate-900/60 rounded-xl border border-slate-800 flex justify-between items-center">
+                <div><div class="font-semibold text-white">Anaya &bull; ₹600</div><div class="text-[10px] text-slate-500">books &bull; Yesterday</div></div>
+                <span class="text-[10px] text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20">Approved</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+
+      if (guardianContainer) guardianContainer.innerHTML = gHtml;
+      if (guardianStandalone) guardianStandalone.innerHTML = gHtml;
+
+      // 3. Render Admin Queue
+      const queue = document.getElementById('hub-cases-queue');
+      const deskQueue = document.getElementById('desk-attention-queue');
+      let qHtml = GlobalStore.cases.map(c => `
+        <div class="p-2.5 bg-slate-950 rounded-xl border ${c.status === 'Held' ? 'border-rose-500/30' : 'border-slate-800'} flex justify-between items-center text-xs">
+          <div class="flex items-center gap-2">
+            <div class="w-6 h-6 rounded-full bg-slate-800 flex items-center justify-center font-bold text-[10px]">${c.initials}</div>
+            <div><div class="font-bold text-white">${c.name}</div><div class="text-[10px] text-slate-400">₹${c.amount.toLocaleString()} &bull; ${c.time}</div></div>
+          </div>
+          <span class="text-[10px] font-mono px-2 py-0.5 rounded-full ${c.status === 'Held' ? 'bg-rose-500/20 text-rose-300 border border-rose-500/30 font-bold' : 'bg-emerald-500/20 text-emerald-400'}">${c.status}</span>
+        </div>
+      `).join('');
+
+      if (queue) queue.innerHTML = qHtml;
+      if (deskQueue) deskQueue.innerHTML = qHtml;
+
+      // Update counters
+      const heldCount = GlobalStore.cases.filter(c => c.status === 'Held').length;
+      document.getElementById('hub-held-count').innerText = heldCount;
+      document.getElementById('desk-held-count').innerText = heldCount;
+      document.getElementById('nav-g-badge').innerText = heldCount;
+    }
+
+    function toggleCall() {
+      GlobalStore.onCall = !GlobalStore.onCall;
+      renderHub();
+    }
+
+    function submitMemberPayment() {
+      GlobalStore.memberStep = 'held';
+      GlobalStore.held = true;
+      GlobalStore.cases[0].status = 'Held';
+      broadcast({ type: 'HELD' });
+      showToast('🚨 COERCION DETECTED', 'Payment held. Alert dispatched to Guardian & Admin.');
+      renderHub();
+    }
+
+    function cancelPayment() {
+      GlobalStore.memberStep = 'form';
+      GlobalStore.held = false;
+      GlobalStore.cases[0].status = 'Cancelled by Victim';
+      broadcast({ type: 'CANCELLED' });
+      showToast('Transfer Cancelled', 'Funds preserved safely.');
+      renderHub();
+    }
+
+    function guardianDecision(decision) {
+      if (decision === 'deny') {
+        GlobalStore.held = false;
+        GlobalStore.memberStep = 'form';
+        GlobalStore.cases[0].status = 'Prevented Coercion';
+        broadcast({ type: 'DENIED' });
+        showToast('Guardian Blocked Scam', 'Transfer permanently cancelled.');
+      } else {
+        GlobalStore.held = false;
+        GlobalStore.memberStep = 'success';
+        GlobalStore.cases[0].status = 'Released';
+        broadcast({ type: 'RELEASED' });
+        showToast('Guardian Approved', 'Payment authorized.');
+      }
+      renderHub();
+    }
+
+    function callVictimPrompt() {
+      showToast('Calling Aarav...', 'Bypassing active scam call to break isolation.');
+    }
+
+    function resetFlow() {
+      GlobalStore.memberStep = 'form';
+      renderHub();
+    }
+
+    function triggerScamSimulation() {
+      GlobalStore.onCall = true;
+      GlobalStore.memberStep = 'held';
+      GlobalStore.held = true;
+      GlobalStore.cases[0].status = 'Held';
+      broadcast({ type: 'HELD' });
+      showToast('Simulation Active', 'Scam call + held payment injected.');
+      renderHub();
+    }
+
+    function openMobileQRModal() {
+      document.getElementById('qr-modal').classList.remove('hidden');
+    }
+
+    function closeMobileQRModal() {
+      document.getElementById('qr-modal').classList.add('hidden');
+    }
+
+    function broadcast(msg) {
+      bus.postMessage(msg);
+      localStorage.setItem('payshield_sync_event', JSON.stringify({ ...msg, time: Date.now() }));
+    }
+
+    function handleSync(type) {
+      if (type === 'HELD' || type === 'PAYMENT_HELD') {
+        GlobalStore.held = true;
+        GlobalStore.onCall = true;
+        GlobalStore.memberStep = 'held';
+        GlobalStore.cases[0].status = 'Held';
+      } else if (type === 'ACCOUNT_FROZEN') {
+        GlobalStore.held = true;
+        GlobalStore.cases[0].status = 'Frozen by SOC';
+      } else {
+        GlobalStore.held = false;
+        GlobalStore.memberStep = 'form';
+        GlobalStore.cases[0].status = 'Released';
+      }
+      renderHub();
+    }
+
+    bus.onmessage = function(e) {
+      if (e.data && e.data.type) {
+        handleSync(e.data.type);
+      }
+    };
+
+    window.addEventListener('storage', function(e) {
+      if (e.key === 'payshield_sync_event' && e.newValue) {
+        try {
+          const payload = JSON.parse(e.newValue);
+          handleSync(payload.type);
+        } catch(err) {}
+      }
+    });
+
+    function showToast(title, desc) {
+      const toast = document.getElementById('hub-toast');
+      document.getElementById('h-toast-title').innerText = title;
+      document.getElementById('h-toast-desc').innerText = desc;
+      toast.classList.remove('translate-y-24', 'opacity-0');
+      setTimeout(() => {
+        toast.classList.add('translate-y-24', 'opacity-0');
+      }, 3500);
+    }
+
+    window.onload = function() {
+      renderHub();
+    };
+  </script>
+</body>
+</html>

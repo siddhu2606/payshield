@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PayShield · Admin Risk Operations Center (SOC)</title>
+  <meta name="theme-color" content="#080C14">
+  <script src="https://www.gstatic.com/antigravity/web/dev/tailwindcss.min.js"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap');
+    :root {
+      --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+    }
+    body {
+      font-family: var(--font-sans);
+      background-color: #080C14;
+      color: #E2E8F0;
+    }
+    .glass-card {
+      background: rgba(15, 23, 42, 0.7);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: #0B0F19; }
+    ::-webkit-scrollbar-thumb { background: #1E293B; border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: #334155; }
+  </style>
+</head>
+<body class="min-h-screen bg-[#080C14] flex flex-col">
+
+  <!-- TOP BAR & NAVIGATION -->
+  <header class="bg-[#0B0F19]/90 backdrop-blur-md border-b border-slate-800/80 sticky top-0 z-40 px-4 md:px-8 py-3">
+    <div class="max-w-[1700px] mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
+      
+      <!-- Brand & Status -->
+      <div class="flex items-center gap-3">
+        <div class="w-9 h-9 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400 font-bold shadow-lg shadow-emerald-500/10">
+          <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+            <line x1="10" y1="9" x2="10" y2="15" stroke="#FBBF24" stroke-width="2.5"/>
+            <line x1="14" y1="9" x2="14" y2="15" stroke="#FBBF24" stroke-width="2.5"/>
+          </svg>
+        </div>
+        <div>
+          <div class="flex items-center gap-2">
+            <span class="font-extrabold tracking-tight text-white text-lg">Pay<span class="text-emerald-400">Shield</span></span>
+            <span class="text-[10px] font-mono bg-blue-500/10 text-blue-400 px-2.5 py-0.5 rounded-full border border-blue-500/20 font-bold">ADMIN SOC CONSOLE</span>
+            <span class="text-[10px] font-mono bg-emerald-500/10 text-emerald-400 px-2 py-0.5 rounded-full border border-emerald-500/20 flex items-center gap-1">
+              <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping"></span>
+              Live Synced
+            </span>
+          </div>
+          <p class="text-xs text-slate-400">Institutional Coercion Interruption & Incident Triage Platform</p>
+        </div>
+      </div>
+
+      <!-- Quick Launch Links to Dedicated Views -->
+      <div class="flex flex-wrap items-center gap-2 text-xs">
+        <a href="index.html" class="px-3 py-1.5 rounded-lg bg-slate-800 text-slate-300 hover:text-white border border-slate-700 transition flex items-center gap-1.5">
+          <span>🏟️</span> Live Arena Hub
+        </a>
+        <a href="member.html" target="_blank" class="px-3 py-1.5 rounded-lg bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 hover:bg-emerald-500/20 transition flex items-center gap-1.5">
+          <span>📱</span> Member App (Aarav) ↗
+        </a>
+        <a href="guardian.html" target="_blank" class="px-3 py-1.5 rounded-lg bg-purple-500/10 border border-purple-500/30 text-purple-300 hover:bg-purple-500/20 transition flex items-center gap-1.5">
+          <span>🛡️</span> Guardian App (Priya) ↗
+        </a>
+        <a href="child.html" target="_blank" class="px-3 py-1.5 rounded-lg bg-amber-500/10 border border-amber-500/30 text-amber-300 hover:bg-amber-500/20 transition flex items-center gap-1.5">
+          <span>👶</span> Child App (Anaya) ↗
+        </a>
+        <button onclick="PayShieldSync.resetAll()" class="px-3 py-1.5 rounded-lg bg-slate-800 text-slate-400 hover:text-rose-400 border border-slate-700 transition">
+          Reset Demo
+        </button>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- LAPTOP DEDICATED ADMIN WORKSPACE -->
+  <div class="flex-1 max-w-[1700px] w-full mx-auto p-4 md:p-6 flex flex-col md:flex-row gap-6">
+
+    <!-- LEFT SIDEBAR -->
+    <aside class="w-full md:w-64 glass-card rounded-2xl p-4 flex flex-col justify-between shrink-0">
+      <div class="space-y-6">
+        <div>
+          <div class="text-[11px] font-mono uppercase text-slate-500 tracking-wider mb-3">OPERATIONS NAVIGATION</div>
+          <nav class="space-y-1 text-xs font-semibold">
+            <button onclick="setAdminView('overview')" id="nav-btn-overview" class="w-full text-left px-3.5 py-2.5 rounded-xl bg-emerald-500 text-slate-950 flex items-center justify-between transition">
+              <span class="flex items-center gap-2"><span>📊</span> Overview</span>
+              <span class="font-mono text-[10px] bg-slate-950/20 px-2 py-0.5 rounded">Active</span>
+            </button>
+            <button onclick="setAdminView('triage')" id="nav-btn-triage" class="w-full text-left px-3.5 py-2.5 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800/50 flex items-center justify-between transition">
+              <span class="flex items-center gap-2"><span>🚨</span> Needs Attention</span>
+              <span id="nav-held-badge" class="font-mono text-[10px] bg-rose-500 text-white px-2 py-0.5 rounded-full font-bold">2</span>
+            </button>
+            <button onclick="setAdminView('contradiction')" id="nav-btn-contradiction" class="w-full text-left px-3.5 py-2.5 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800/50 flex items-center justify-between transition">
+              <span class="flex items-center gap-2"><span>🔍</span> Story vs Facts Engine</span>
+              <span class="text-emerald-400 font-mono text-[10px]">FIN-11</span>
+            </button>
+            <button onclick="setAdminView('registry')" id="nav-btn-registry" class="w-full text-left px-3.5 py-2.5 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800/50 flex items-center justify-between transition">
+              <span class="flex items-center gap-2"><span>🗄️</span> Synthetic Payee DB</span>
+              <span class="font-mono text-[10px] text-slate-500">20 nodes</span>
+            </button>
+          </nav>
+        </div>
+
+        <!-- Coercion Simulation Injector -->
+        <div class="pt-4 border-t border-slate-800">
+          <div class="text-[11px] font-mono uppercase text-slate-500 tracking-wider mb-2">LIVE SCAM INJECTOR</div>
+          <div class="space-y-2">
+            <button onclick="simulateDigitalArrest()" class="w-full text-left p-2.5 rounded-xl bg-rose-500/10 hover:bg-rose-500/20 border border-rose-500/30 text-rose-300 text-xs transition">
+              <div class="font-bold">⚠️ Fake CBI Digital Arrest</div>
+              <div class="text-[10px] text-rose-400/80">₹85,000 &bull; Active call 24m</div>
+            </button>
+            <button onclick="simulateCourierFraud()" class="w-full text-left p-2.5 rounded-xl bg-purple-500/10 hover:bg-purple-500/20 border border-purple-500/30 text-purple-300 text-xs transition">
+              <div class="font-bold">📦 Customs Courier Scam</div>
+              <div class="text-[10px] text-purple-400/80">₹1,42,000 &bull; Unknown payee</div>
+            </button>
+            <button onclick="simulateNormalPayment()" class="w-full text-left p-2.5 rounded-xl bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/30 text-emerald-300 text-xs transition">
+              <div class="font-bold">🛒 Normal Grocery (Pass)</div>
+              <div class="text-[10px] text-emerald-400/80">₹600 &bull; BigBasket regular</div>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Officer Profile Card -->
+      <div class="pt-4 border-t border-slate-800 flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-slate-800 border border-slate-700 flex items-center justify-center font-bold text-white text-sm">
+          MI
+        </div>
+        <div>
+          <div class="font-bold text-white text-xs">Meera Iyer</div>
+          <div class="text-[10px] text-emerald-400 font-mono">Senior Risk Analyst</div>
+          <div class="text-[9px] text-slate-500">Institutional Fraud Desk</div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- RIGHT MAIN CONTENT DASHBOARD -->
+    <main class="flex-1 flex flex-col space-y-6">
+
+      <!-- TOP METRIC CARDS -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        
+        <div class="glass-card p-5 rounded-2xl border border-slate-800 hover:border-slate-700 transition">
+          <div class="flex items-center justify-between text-xs text-slate-400 mb-2 font-mono">
+            <span>KYC PENDING</span>
+            <span class="text-blue-400">⚡ Live</span>
+          </div>
+          <div class="text-3xl font-extrabold text-white">18</div>
+          <p class="text-[11px] text-slate-500 mt-1">Verification queue within SLA</p>
+        </div>
+
+        <div class="glass-card p-5 rounded-2xl border border-rose-500/30 bg-rose-500/5 hover:border-rose-500/50 transition">
+          <div class="flex items-center justify-between text-xs text-rose-400 mb-2 font-mono">
+            <span>PAYMENTS HELD</span>
+            <span class="w-2 h-2 rounded-full bg-rose-500 animate-ping"></span>
+          </div>
+          <div class="text-3xl font-extrabold text-rose-400" id="stat-payments-held">2</div>
+          <p class="text-[11px] text-rose-300/80 mt-1">Coercion paused &bull; Awaiting resolution</p>
+        </div>
+
+        <div class="glass-card p-5 rounded-2xl border border-slate-800 hover:border-slate-700 transition">
+          <div class="flex items-center justify-between text-xs text-slate-400 mb-2 font-mono">
+            <span>FALSE-BLOCK RATE</span>
+            <span class="text-emerald-400">Target &lt;2%</span>
+          </div>
+          <div class="text-3xl font-extrabold text-emerald-400">1.4%</div>
+          <p class="text-[11px] text-slate-500 mt-1">Nudges prevent friction on genuine flows</p>
+        </div>
+
+        <div class="glass-card p-5 rounded-2xl border border-slate-800 hover:border-slate-700 transition">
+          <div class="flex items-center justify-between text-xs text-slate-400 mb-2 font-mono">
+            <span>MEDIAN REVIEW TIME</span>
+            <span class="text-amber-400">Fast Resolution</span>
+          </div>
+          <div class="text-3xl font-extrabold text-white">46s</div>
+          <p class="text-[11px] text-slate-500 mt-1">Guardian callback / admin triage speed</p>
+        </div>
+
+      </div>
+
+      <!-- VIEW CONTAINER: OVERVIEW & TRIAGE -->
+      <div id="admin-view-overview" class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+
+        <!-- LADDER CHART (7 COLS) -->
+        <div class="lg:col-span-7 glass-card p-6 rounded-2xl border border-slate-800 flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between mb-4">
+              <div>
+                <h3 class="text-sm font-bold text-white">Coercion Response Ladder</h3>
+                <p class="text-xs text-slate-400">Interventions dynamically graduated by risk score (0–100)</p>
+              </div>
+              <span class="text-[10px] font-mono bg-slate-800 text-slate-300 px-2.5 py-1 rounded-lg border border-slate-700">TODAY: 167 ASSESSMENTS</span>
+            </div>
+
+            <div class="space-y-4 text-xs">
+              <div>
+                <div class="flex justify-between mb-1.5 font-medium">
+                  <span class="text-slate-300 flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-[#00E5A3]"></span> Level 0: Pass (0–24)</span>
+                  <span class="font-mono text-white font-bold">92 <span class="text-slate-500 font-normal">(55%)</span></span>
+                </div>
+                <div class="w-full bg-slate-900 h-3 rounded-full overflow-hidden border border-slate-800">
+                  <div class="bg-[#00E5A3] h-full rounded-full transition-all duration-700" style="width: 55%"></div>
+                </div>
+              </div>
+
+              <div>
+                <div class="flex justify-between mb-1.5 font-medium">
+                  <span class="text-slate-300 flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-[#84CC16]"></span> Level 1: Nudge Banner (25–49)</span>
+                  <span class="font-mono text-white font-bold">41 <span class="text-slate-500 font-normal">(25%)</span></span>
+                </div>
+                <div class="w-full bg-slate-900 h-3 rounded-full overflow-hidden border border-slate-800">
+                  <div class="bg-[#84CC16] h-full rounded-full transition-all duration-700" style="width: 25%"></div>
+                </div>
+              </div>
+
+              <div>
+                <div class="flex justify-between mb-1.5 font-medium">
+                  <span class="text-slate-300 flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-[#F59E0B]"></span> Level 2: Safety Questions (50–69)</span>
+                  <span class="font-mono text-white font-bold">22 <span class="text-slate-500 font-normal">(13%)</span></span>
+                </div>
+                <div class="w-full bg-slate-900 h-3 rounded-full overflow-hidden border border-slate-800">
+                  <div class="bg-[#F59E0B] h-full rounded-full transition-all duration-700" style="width: 13%"></div>
+                </div>
+              </div>
+
+              <div>
+                <div class="flex justify-between mb-1.5 font-medium">
+                  <span class="text-slate-300 flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-[#EA580C]"></span> Level 3: 60s Cooling-Off Pause (70–84)</span>
+                  <span class="font-mono text-white font-bold">9 <span class="text-slate-500 font-normal">(5%)</span></span>
+                </div>
+                <div class="w-full bg-slate-900 h-3 rounded-full overflow-hidden border border-slate-800">
+                  <div class="bg-[#EA580C] h-full rounded-full transition-all duration-700" style="width: 5%"></div>
+                </div>
+              </div>
+
+              <div>
+                <div class="flex justify-between mb-1.5 font-medium">
+                  <span class="text-slate-300 flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-[#EF4444]"></span> Level 4: Guardian Hold & Disruption (85–100)</span>
+                  <span class="font-mono text-white font-bold">3 <span class="text-slate-500 font-normal">(2%)</span></span>
+                </div>
+                <div class="w-full bg-slate-900 h-3 rounded-full overflow-hidden border border-slate-800">
+                  <div class="bg-[#EF4444] h-full rounded-full transition-all duration-700" style="width: 2%"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="mt-6 p-3.5 rounded-xl bg-slate-900/80 border border-slate-800 flex items-center justify-between text-xs text-slate-400">
+            <span class="flex items-center gap-2">
+              <span class="text-emerald-400 font-bold">Philosophy:</span>
+              "A pause, not a block. A nudge, not a verdict."
+            </span>
+            <span class="font-mono text-[10px] text-slate-500">VIT Pune · FIN-11</span>
+          </div>
+        </div>
+
+        <!-- LIVE NEEDS ATTENTION QUEUE (5 COLS) -->
+        <div class="lg:col-span-5 glass-card p-6 rounded-2xl border border-slate-800 flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between mb-4">
+              <div>
+                <h3 class="text-sm font-bold text-white flex items-center gap-2">
+                  <span>🚨 Needs Attention</span>
+                  <span class="w-2 h-2 rounded-full bg-rose-500 animate-pulse"></span>
+                </h3>
+                <p class="text-xs text-slate-400">High-risk cases requiring immediate review</p>
+              </div>
+              <span id="queue-count-pill" class="text-xs font-mono bg-rose-500/20 text-rose-300 px-2 py-0.5 rounded-full border border-rose-500/30">2 HELD</span>
+            </div>
+
+            <!-- DYNAMIC QUEUE LIST -->
+            <div id="admin-cases-container" class="space-y-3">
+              <!-- Rendered by JS -->
+            </div>
+          </div>
+
+          <div class="mt-4 pt-3 border-t border-slate-800 flex items-center justify-between text-xs text-slate-400">
+            <span class="font-mono text-[11px]">Real-Time Sync Active</span>
+            <button onclick="inspectCase('CASE-8841')" class="text-emerald-400 hover:text-emerald-300 font-semibold text-xs">
+              Inspect Active Case &rarr;
+            </button>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- VIEW: STORY VS FACTS CONTRADICTION ENGINE -->
+      <div id="admin-view-contradiction" class="glass-card p-6 rounded-2xl border border-slate-800 hidden space-y-6">
+        <div class="flex items-center justify-between">
+          <div>
+            <h3 class="text-lg font-bold text-white flex items-center gap-2">
+              <span>⚖️ Story vs Facts Contradiction Engine</span>
+              <span class="text-xs font-mono bg-emerald-500/10 text-emerald-400 px-2 py-0.5 rounded border border-emerald-500/20">PATENTABLE DIFFERENTIATOR</span>
+            </h3>
+            <p class="text-xs text-slate-400 mt-1">Cross-analyzing user claims against real-world synthetic banking telemetry.</p>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <!-- Story Claimed by Victim -->
+          <div class="p-5 rounded-2xl bg-rose-500/5 border border-rose-500/20 space-y-3">
+            <div class="flex items-center gap-2 text-rose-400 text-xs font-mono font-bold">
+              <span>❌ WHAT THE VICTIM UNDER COERCION CLAIMS</span>
+            </div>
+            <div class="text-base font-bold text-white">"Government Verification Penalty under CBI Arrest Order"</div>
+            <div class="text-xs text-slate-300 leading-relaxed">
+              Scammer claims to be Inspector R. Sharma demanding immediate security deposit on video call under threat of police remand.
+            </div>
+            <div class="p-3 bg-slate-900 rounded-xl font-mono text-xs text-rose-300 space-y-1">
+              <div>&bull; Stated Entity: CBI Financial Crimes Cell</div>
+              <div>&bull; Stated Reason: Immediate remand bail bond</div>
+              <div>&bull; Claimed Urgency: Remand within 20 minutes</div>
+            </div>
+          </div>
+
+          <!-- Synthetic Payee Registry Reality -->
+          <div class="p-5 rounded-2xl bg-emerald-500/5 border border-emerald-500/20 space-y-3">
+            <div class="flex items-center gap-2 text-emerald-400 text-xs font-mono font-bold">
+              <span>✓ WHAT THE BANKING REGISTRY ACTUALLY PROVES</span>
+            </div>
+            <div class="text-base font-bold text-white">Private Savings Account · Mule Ring Signature</div>
+            <div class="text-xs text-slate-300 leading-relaxed">
+              Account created 2 days ago in rural branch with 14 incoming UPI micro-deposits today and zero institutional corporate credentials.
+            </div>
+            <div class="p-3 bg-slate-900 rounded-xl font-mono text-xs text-emerald-300 space-y-1">
+              <div>&bull; Account Type: Individual Savings (Not Govt Treasury)</div>
+              <div>&bull; Account Age: 48 Hours Old</div>
+              <div>&bull; Inflow Velocity: 14 deposits in last 6 hours (Mule burst)</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Contradiction Verdict -->
+        <div class="p-5 rounded-2xl bg-amber-500/10 border border-amber-500/30 text-amber-200 text-xs space-y-2">
+          <div class="font-bold flex items-center gap-2 text-sm text-amber-300">
+            <span>🚨 Contradiction Flag Raised: GOVT_IMPUTATION_SAVINGS_MISMATCH</span>
+          </div>
+          <p class="leading-relaxed">
+            Law enforcement authorities (CBI, ED, State Police) never deposit penalties or bonds into private individual savings accounts. Risk engine immediately assigned +45 points to risk score (Total: 98/100).
+          </p>
+        </div>
+      </div>
+
+      <!-- VIEW: SYNTHETIC PAYEE DATABASE -->
+      <div id="admin-view-registry" class="glass-card p-6 rounded-2xl border border-slate-800 hidden space-y-4">
+        <div class="flex items-center justify-between">
+          <div>
+            <h3 class="text-base font-bold text-white">Synthetic Payee Fact Database</h3>
+            <p class="text-xs text-slate-400">Ground truth telemetry used to score transaction context</p>
+          </div>
+          <span class="text-xs font-mono text-slate-400">Showing 5 of 20 benchmark payees</span>
+        </div>
+
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-xs">
+            <thead class="text-slate-400 font-mono text-[11px] border-b border-slate-800">
+              <tr>
+                <th class="pb-3">Payee Name</th>
+                <th class="pb-3">VPA / Account</th>
+                <th class="pb-3">Entity Type</th>
+                <th class="pb-3">Age</th>
+                <th class="pb-3">Daily Inflow</th>
+                <th class="pb-3">Risk Assessment</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-800 text-slate-300">
+              <tr>
+                <td class="py-3 font-semibold text-white">Inspector R. Sharma</td>
+                <td class="py-3 font-mono">cbi.verification@okaxis</td>
+                <td class="py-3"><span class="px-2 py-0.5 rounded bg-rose-500/10 text-rose-400 border border-rose-500/20">Private Savings</span></td>
+                <td class="py-3">2 days</td>
+                <td class="py-3 font-mono">₹4,20,000 (14 txns)</td>
+                <td class="py-3 font-bold text-rose-400">Flagged Money Mule</td>
+              </tr>
+              <tr>
+                <td class="py-3 font-semibold text-white">BigBasket Supermarket</td>
+                <td class="py-3 font-mono">bigbasket@icici</td>
+                <td class="py-3"><span class="px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">Verified Merchant</span></td>
+                <td class="py-3">7 years</td>
+                <td class="py-3 font-mono">₹85,00,000+</td>
+                <td class="py-3 font-bold text-emerald-400">Trusted Whitelist</td>
+              </tr>
+              <tr>
+                <td class="py-3 font-semibold text-white">Customs Escrow Clear</td>
+                <td class="py-3 font-mono">customs.clearance@ybl</td>
+                <td class="py-3"><span class="px-2 py-0.5 rounded bg-rose-500/10 text-rose-400 border border-rose-500/20">Individual Current</span></td>
+                <td class="py-3">5 days</td>
+                <td class="py-3 font-mono">₹6,80,000 (9 txns)</td>
+                <td class="py-3 font-bold text-rose-400">Courier Extortion Node</td>
+              </tr>
+              <tr>
+                <td class="py-3 font-semibold text-white">BSES Yamuna Power</td>
+                <td class="py-3 font-mono">bses@hdfcbank</td>
+                <td class="py-3"><span class="px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">Utility BillDesk</span></td>
+                <td class="py-3">12 years</td>
+                <td class="py-3 font-mono">₹1,20,00,000+</td>
+                <td class="py-3 font-bold text-emerald-400">Verified Utility</td>
+              </tr>
+              <tr>
+                <td class="py-3 font-semibold text-white">Telecom KYC Cell</td>
+                <td class="py-3 font-mono">airtel.simverify@paytm</td>
+                <td class="py-3"><span class="px-2 py-0.5 rounded bg-amber-500/10 text-amber-400 border border-amber-500/20">Unverified Wallet</span></td>
+                <td class="py-3">1 day</td>
+                <td class="py-3 font-mono">₹1,15,000 (8 txns)</td>
+                <td class="py-3 font-bold text-amber-400">SIM Deactivation Scam</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </main>
+
+  </div>
+
+  <!-- INSPECTION & ACTION MODAL -->
+  <div id="admin-modal" class="fixed inset-0 bg-black/85 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
+    <div class="glass-card bg-[#0D1322] border border-slate-700 max-w-2xl w-full rounded-3xl p-6 shadow-2xl relative space-y-5">
+      <button onclick="closeAdminModal()" class="absolute top-5 right-5 text-slate-400 hover:text-white p-1 text-lg">✕</button>
+
+      <div class="flex items-center justify-between border-b border-slate-800 pb-4">
+        <div>
+          <div class="flex items-center gap-2">
+            <h3 class="text-xl font-bold text-white" id="modal-case-title">Case #CASE-8841</h3>
+            <span class="text-xs font-mono bg-rose-500/20 text-rose-400 px-2 py-0.5 rounded-full border border-rose-500/30 font-bold" id="modal-case-tier">CRITICAL (0.98)</span>
+          </div>
+          <p class="text-xs text-slate-400 mt-0.5" id="modal-case-subtitle">Customer: Aarav Mehta &bull; Intercepted at 14:02</p>
+        </div>
+      </div>
+
+      <!-- Detail Panels -->
+      <div class="space-y-3 text-xs">
+        <div class="p-4 rounded-xl bg-slate-900 border border-slate-800 space-y-2">
+          <div class="text-[11px] font-mono uppercase text-slate-400">TRANSACTION CONTEXT</div>
+          <div class="grid grid-cols-2 gap-3 text-slate-300">
+            <div><span class="text-slate-500">Attempted Amount:</span> <span class="text-white font-bold text-sm" id="modal-amount">₹85,000</span></div>
+            <div><span class="text-slate-500">Baseline Habit:</span> <span class="text-white" id="modal-baseline">₹4,000 (21.2x usual)</span></div>
+            <div><span class="text-slate-500">Beneficiary:</span> <span class="text-white font-mono" id="modal-payee">Inspector R. Sharma</span></div>
+            <div><span class="text-slate-500">Active Call Telemetry:</span> <span class="text-rose-400 font-bold" id="modal-call">CALLING &bull; 24:18 (Scammer line)</span></div>
+          </div>
+        </div>
+
+        <div class="p-4 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-200 space-y-1">
+          <div class="text-[11px] font-mono font-bold text-rose-400">CONTRADICTION FLAG RAISED</div>
+          <p class="leading-relaxed text-[11px]" id="modal-contradiction">
+            Story claims official CBI verification fee under arrest order. Facts reveal private savings account ••4471 opened 2 days ago with 14 incoming UPI bursts.
+          </p>
+        </div>
+      </div>
+
+      <!-- Admin Actions -->
+      <div class="pt-2 border-t border-slate-800 grid grid-cols-1 sm:grid-cols-3 gap-3">
+        <button onclick="adminActionFreeze()" class="py-3 bg-rose-600 hover:bg-rose-700 text-white font-bold rounded-xl text-xs transition active:scale-95 shadow-lg shadow-rose-900/30">
+          ❄️ Freeze Account
+        </button>
+        <button onclick="adminActionContactGuardian()" class="py-3 bg-purple-600 hover:bg-purple-700 text-white font-bold rounded-xl text-xs transition active:scale-95">
+          📞 Dispatch to Guardian
+        </button>
+        <button onclick="adminActionRelease()" class="py-3 bg-slate-800 hover:bg-slate-700 text-slate-200 font-semibold rounded-xl text-xs border border-slate-700 transition active:scale-95">
+          ✓ Release Hold
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOAST NOTIFICATION -->
+  <div id="admin-toast" class="fixed bottom-6 right-6 z-50 transform translate-y-24 opacity-0 transition-all duration-300 pointer-events-none">
+    <div class="glass-card bg-slate-900/95 border border-slate-700 text-white p-4 rounded-2xl shadow-2xl flex items-center gap-3">
+      <div id="admin-toast-icon" class="w-8 h-8 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-base font-bold">✓</div>
+      <div>
+        <div id="admin-toast-title" class="font-bold text-xs">Action Dispatched</div>
+        <div id="admin-toast-desc" class="text-[11px] text-slate-400">Synchronized across member & guardian apps</div>
+      </div>
+    </div>
+  </div>
+
+  <script src="shared-sync.js"></script>
+  <script>
+    let currentActiveView = 'overview';
+    let selectedCaseId = 'CASE-8841';
+
+    function setAdminView(view) {
+      currentActiveView = view;
+      ['overview', 'contradiction', 'registry'].forEach(v => {
+        const el = document.getElementById(`admin-view-${v}`);
+        const btn = document.getElementById(`nav-btn-${v}`);
+        if (el) el.classList.toggle('hidden', v !== view);
+        if (btn) {
+          if (v === view) {
+            btn.className = 'w-full text-left px-3.5 py-2.5 rounded-xl bg-emerald-500 text-slate-950 flex items-center justify-between font-semibold transition';
+          } else {
+            btn.className = 'w-full text-left px-3.5 py-2.5 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800/50 flex items-center justify-between font-semibold transition';
+          }
+        }
+      });
+    }
+
+    function renderAdminDashboard(state) {
+      // Metric counters
+      const heldCount = state.cases.filter(c => c.status === 'HELD').length;
+      document.getElementById('stat-payments-held').innerText = heldCount;
+      document.getElementById('nav-held-badge').innerText = heldCount;
+      document.getElementById('queue-count-pill').innerText = `${heldCount} HELD`;
+
+      // Render Cases
+      const container = document.getElementById('admin-cases-container');
+      if (!container) return;
+
+      container.innerHTML = state.cases.map(c => {
+        const isSelected = c.id === selectedCaseId;
+        const isCritical = c.tier === 'CRITICAL' || c.riskScore > 0.8;
+        const statusBadge = c.status === 'HELD' 
+          ? '<span class="text-[10px] font-mono bg-rose-500/20 text-rose-300 px-2 py-0.5 rounded border border-rose-500/30 font-bold animate-pulse">HELD</span>'
+          : c.status === 'FROZEN'
+          ? '<span class="text-[10px] font-mono bg-blue-500/20 text-blue-300 px-2 py-0.5 rounded border border-blue-500/30 font-bold">FROZEN</span>'
+          : '<span class="text-[10px] font-mono bg-emerald-500/20 text-emerald-300 px-2 py-0.5 rounded border border-emerald-500/30 font-bold">RESOLVED</span>';
+
+        return `
+          <div class="p-3.5 rounded-xl bg-slate-900/80 border ${isSelected ? 'border-emerald-500/50 bg-slate-900' : 'border-slate-800'} hover:border-slate-700 transition flex items-center justify-between gap-3 cursor-pointer" onclick="inspectCase('${c.id}')">
+            <div>
+              <div class="flex items-center gap-2">
+                <span class="font-bold text-white text-xs">${c.user}</span>
+                <span class="text-xs font-mono text-slate-400 font-semibold">₹${c.amount.toLocaleString('en-IN')}</span>
+                ${statusBadge}
+              </div>
+              <p class="text-[11px] text-slate-400 mt-0.5">${c.reason}</p>
+            </div>
+            <div class="text-right shrink-0">
+              <span class="text-xs font-mono font-bold ${isCritical ? 'text-rose-400' : 'text-amber-400'}">
+                ${(c.riskScore * 100).toFixed(0)}/100
+              </span>
+              <div class="text-[10px] text-slate-500">${c.time}</div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function inspectCase(caseId) {
+      selectedCaseId = caseId;
+      const state = PayShieldSync.getState();
+      const c = state.cases.find(x => x.id === caseId) || state.currentCase;
+      
+      document.getElementById('modal-case-title').innerText = `Case #${c.id}`;
+      document.getElementById('modal-case-tier').innerText = `${c.tier || 'CRITICAL'} (${c.riskScore})`;
+      document.getElementById('modal-case-subtitle').innerText = `Customer: ${c.user} • Intercepted`;
+      document.getElementById('modal-amount').innerText = `₹${(c.amount || 85000).toLocaleString('en-IN')}`;
+      
+      const modal = document.getElementById('admin-modal');
+      modal.classList.remove('hidden');
+    }
+
+    function closeAdminModal() {
+      document.getElementById('admin-modal').classList.add('hidden');
+    }
+
+    function adminActionFreeze() {
+      const state = PayShieldSync.getState();
+      PayShieldSync.adminFreezeAccount(state.currentCase.user);
+      closeAdminModal();
+      showAdminToast('Account Frozen', 'All outgoing transfers paused. SOC lock engaged.');
+    }
+
+    function adminActionContactGuardian() {
+      PayShieldSync.triggerPaymentHeld();
+      closeAdminModal();
+      showAdminToast('Alert Dispatched', 'Real-time alert sent to Guardian Priya.');
+    }
+
+    function adminActionRelease() {
+      PayShieldSync.adminReleaseHold(selectedCaseId);
+      closeAdminModal();
+      showAdminToast('Hold Released', 'Transaction allowed to complete.');
+    }
+
+    function simulateDigitalArrest() {
+      PayShieldSync.triggerPaymentHeld({
+        amount: 85000,
+        payee: 'Inspector R. Sharma (CBI Verification)',
+        upi: 'cbi.verification@okaxis',
+        riskScore: 0.98,
+        user: 'Aarav Mehta',
+        tags: ['Amount 21x usual', 'On a call', 'New payee']
+      });
+      PayShieldSync.toggleCall(true);
+      showAdminToast('Simulated Digital Arrest', '₹85,000 coercion held on Member app!');
+    }
+
+    function simulateCourierFraud() {
+      PayShieldSync.triggerPaymentHeld({
+        amount: 142000,
+        payee: 'Customs Escrow Clear',
+        upi: 'customs.clearance@ybl',
+        riskScore: 0.94,
+        user: 'Kavita Sen',
+        tags: ['Amount 35x usual', 'On a call', 'Narcotics scam']
+      });
+      PayShieldSync.toggleCall(true);
+      showAdminToast('Simulated Courier Fraud', '₹1,42,000 extortion held.');
+    }
+
+    function simulateNormalPayment() {
+      PayShieldSync.adminReleaseHold('CASE-8841');
+      PayShieldSync.toggleCall(false);
+      showAdminToast('Normal Payment', 'Instant pass with zero friction.');
+    }
+
+    function showAdminToast(title, desc) {
+      const toast = document.getElementById('admin-toast');
+      document.getElementById('admin-toast-title').innerText = title;
+      document.getElementById('admin-toast-desc').innerText = desc;
+      toast.classList.remove('translate-y-24', 'opacity-0');
+      setTimeout(() => {
+        toast.classList.add('translate-y-24', 'opacity-0');
+      }, 3000);
+    }
+
+    // Subscribe to shared real-time bus
+    PayShieldSync.subscribe(({ state }) => {
+      renderAdminDashboard(state);
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,14 @@
+# Environment & dependencies
+node_modules/
+__pycache__/
+*.pyc
+.env
+.DS_Store
+Thumbs.db
+
+# Snapshots & cache
+.snapshots/
+.vscode/
+.idea/
+dist/
+build/
